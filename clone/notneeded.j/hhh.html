@@ -1,0 +1,327 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+ 
+<head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Complaint Form</title> 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .header {
+      font-size: 25px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+    
+    h4 {
+      color: #666;
+      font-weight: normal;
+    }
+    
+    .anonymous-toggle {
+      background: #f0f4ff;
+      border: 2px solid #08611f;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .anonymous-toggle:hover {
+      background: #e5edff;
+    }
+    
+    .anonymous-toggle input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+    
+    .anonymous-toggle label {
+      cursor: pointer;
+      font-weight: 500;
+      color: #333;
+      flex: 1;
+    }
+    
+    .anonymous-info {
+      font-size: 13px;
+      color: #666;
+      margin-top: 0.5rem;
+      padding-left: 32px;
+    }
+    
+    .form-container {
+      margin-top: 1rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    input, textarea {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 0.5rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .error {
+      display: none;
+      color: #e74c3c;
+      font-size: 13px;
+      margin-bottom: 1rem;
+    }
+    
+    .error.show {
+      display: block;
+    }
+    
+    .personal-info {
+      transition: opacity 0.3s ease, max-height 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .personal-info.hidden {
+      opacity: 0.4;
+      pointer-events: none;
+      max-height: 0;
+      margin: 0;
+    }
+    
+    .submit-btn {
+      width: 100%;
+      height: 45px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      margin-top: 1rem;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+  </style>
+</head> 
+ 
+<body> 
+  <div class="container"> 
+    <header> 
+      <div class="header">COMPLAINT MANAGEMENT SYSTEM</div> 
+      <h4>Send in your complaints we are listening!</h4> 
+    </header> 
+    
+    <div class="form-container"> 
+      <form id="complaintForm"> 
+        <div class="anonymous-toggle" onclick="document.getElementById('anonymousCheckbox').click()">
+          <input type="checkbox" id="anonymousCheckbox" onclick="event.stopPropagation()">
+          <div style="flex: 1;">
+            <label for="anonymousCheckbox">Submit Anonymously</label>
+            <div class="anonymous-info">Check this box to submit your complaint without revealing your identity. Your personal information will not be recorded.</div>
+          </div>
+        </div>
+
+        <div id="personalInfoSection" class="personal-info">
+          <label for="name">Full Name <span class="required-indicator">*</span></label> 
+          <input type="text" id="name" placeholder="Enter your full name"> 
+          <small id="nameError" class="error">Name is required</small>
+   
+          <label for="matric">Registration Number <span class="required-indicator">*</span></label> 
+          <input type="text" id="matric" placeholder="Enter matric number"> 
+          <small id="matricError" class="error">Matric number is required</small>
+   
+          <label for="email">Email <span class="required-indicator">*</span></label> 
+          <input type="email" id="email" placeholder="Enter Email"> 
+          <small id="emailError" class="error">Enter a valid email</small>
+   
+          <label for="department">Department <span class="required-indicator">*</span></label> 
+          <input type="text" id="department" placeholder="Enter Department"> 
+          <small id="deptError" class="error">Department is required</small>
+        </div>
+ 
+        <label for="title">Complaint Title <span style="color: #e74c3c;">*</span></label> 
+        <input type="text" id="title" placeholder="Title of your complaint"> 
+        <small id="titleError" class="error">Complaint title is required</small>
+ 
+        <label for="details">Complaint Details <span style="color: #e74c3c;">*</span></label> 
+        <textarea id="details" placeholder="Describe your complaint..." rows="5"></textarea> 
+        <small id="detailsError" class="error">Details must be at least 20 characters</small> 
+ 
+        <label for="file">Attachment (optional)</label> 
+        <input type="file" name="file" id="file"> 
+ 
+        <button type="submit" class="submit-btn">Submit Complaint</button> 
+      </form> 
+    </div> 
+  </div> 
+  
+  <script>
+    const anonymousCheckbox = document.getElementById('anonymousCheckbox');
+    const personalInfoSection = document.getElementById('personalInfoSection');
+    const form = document.getElementById('complaintForm');
+    
+    // Toggle personal info visibility
+    anonymousCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        personalInfoSection.classList.add('hidden');
+        // Clear personal info fields when anonymous
+        document.getElementById('name').value = '';
+        document.getElementById('matric').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('department').value = '';
+      } else {
+        personalInfoSection.classList.remove('hidden');
+      }
+    });
+    
+    // Form validation and submission
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      let isValid = true;
+      const isAnonymous = anonymousCheckbox.checked;
+      
+      // Hide all errors first
+      document.querySelectorAll('.error').forEach(err => err.classList.remove('show'));
+      
+      // Validate personal info only if not anonymous
+      if (!isAnonymous) {
+        const name = document.getElementById('name').value.trim();
+        const matric = document.getElementById('matric').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const department = document.getElementById('department').value.trim();
+        
+        if (!name) {
+          document.getElementById('nameError').classList.add('show');
+          isValid = false;
+        }
+        
+        if (!matric) {
+          document.getElementById('matricError').classList.add('show');
+          isValid = false;
+        }
+        
+        if (!email || !email.includes('@')) {
+          document.getElementById('emailError').classList.add('show');
+          isValid = false;
+        }
+        
+        if (!department) {
+          document.getElementById('deptError').classList.add('show');
+          isValid = false;
+        }
+      }
+      
+      // Always validate title and details
+      const title = document.getElementById('title').value.trim();
+      const details = document.getElementById('details').value.trim();
+      
+      if (!title) {
+        document.getElementById('titleError').classList.add('show');
+        isValid = false;
+      }
+      
+      if (details.length < 20) {
+        document.getElementById('detailsError').classList.add('show');
+        isValid = false;
+      }
+      
+      if (isValid) {
+        // Prepare form data
+        const formData = new FormData();
+        
+        if (isAnonymous) {
+          formData.append('anonymous', 'true');
+          formData.append('name', 'Anonymous');
+          formData.append('matric', 'N/A');
+          formData.append('email', 'anonymous@system.local');
+          formData.append('department', 'N/A');
+        } else {
+          formData.append('anonymous', 'false');
+          formData.append('name', document.getElementById('name').value);
+          formData.append('matric', document.getElementById('matric').value);
+          formData.append('email', document.getElementById('email').value);
+          formData.append('department', document.getElementById('department').value);
+        }
+        
+        formData.append('title', title);
+        formData.append('details', details);
+        
+        const fileInput = document.getElementById('file');
+        if (fileInput.files.length > 0) {
+          formData.append('file', fileInput.files[0]);
+        }
+        
+        // Show success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Complaint Submitted!',
+          text: isAnonymous ? 
+            'Your anonymous complaint has been submitted successfully.' : 
+            'Your complaint has been submitted successfully.',
+          confirmButtonColor: '#667eea'
+        }).then(() => {
+          form.reset();
+          personalInfoSection.classList.remove('hidden');
+        });
+        
+        // Here you would normally send the formData to your server
+        // fetch('/submit-complaint', { method: 'POST', body: formData })
+      }
+    });
+  </script>
+</body> 
+ 
+</html>

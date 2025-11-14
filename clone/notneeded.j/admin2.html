@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Complaint Management System</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/admdash.css">
+
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>
+        <i class="fas fa-tachometer-alt"></i>
+        Admin Dashboard
+      </h1>
+      <div class="admin-info">
+        <div>
+          <div style="font-weight: 600;">John Admin</div>
+          <div style="font-size: 0.8rem; color: #777;">Administrator</div>
+        </div>
+        <div class="admin-avatar">JA</div>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card total">
+        <i class="fas fa-clipboard-list"></i>
+        <div class="stat-number" id="totalComplaints">156</div>
+        <div class="stat-label">Total Complaints</div>
+      </div>
+      <div class="stat-card pending">
+        <i class="fas fa-clock"></i>
+        <div class="stat-number" id="pendingComplaints">42</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card resolved">
+        <i class="fas fa-check-circle"></i>
+        <div class="stat-number" id="resolvedComplaints">98</div>
+        <div class="stat-label">Resolved</div>
+      </div>
+      <div class="stat-card rejected">
+        <i class="fas fa-times-circle"></i>
+        <div class="stat-number" id="rejectedComplaints">16</div>
+        <div class="stat-label">Rejected</div>
+      </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-main">
+      <div class="dashboard-header">
+        <h2 class="dashboard-title">
+          <i class="fas fa-list"></i> Complaint Management
+        </h2>
+        <div class="controls">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search complaints...">
+          </div>
+          <select class="filter-select" id="statusFilter">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <select class="filter-select" id="priorityFilter">
+            <option value="">All Priority</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="complaints-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Subject</th>
+            <th>Customer</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="complaintsTableBody">
+          <!-- Table content will be populated by JavaScript -->
+        </tbody>
+      </table>
+
+      <div class="pagination" id="pagination">
+        <!-- Pagination will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Complaint Details -->
+  <div id="complaintModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Complaint Details</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="complaint-details" id="complaintDetails">
+        <!-- Details will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script src="/script/admndash1.js"></script>
+</body>

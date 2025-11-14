@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complaint Form</title>
+  <link rel="icon" type="image/png" href="assets/National-Open_University-Nigeria.png">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="/complaintform.css">
+</head>
+
+<body>
+  <div id="userInfo"></div>
+  <button id="logoutBtn">Logout</button>
+  <div class="container">
+    <!-- <div class="logo"><span><img src="assets/National-Open_University-Nigeria.png" alt="NACOSLogo"></span></div> -->
+    <header>
+      <div class="header" style="font-size: 25px;"> COMPLAINT MANAGEMENT SYSTEM</div>
+      <h4>Send in your complaints we are listening!</h4>
+    </header>
+    <div class="form-container">
+      <form id="complaintForm" onsubmit="handleComplaintSubmit(event)" action="/submit-complaint" method="POST"
+        enctype="multipart/form-data">
+
+         <div class="anonymous-toggle" onclick="document.getElementById('anonymousCheckbox').click()">
+          <input type="checkbox" id="anonymousCheckbox" name="anonymous" onclick="event.stopPropagation()">
+          <div style="flex: 1;">
+            <label for="anonymousCheckbox">Submit Anonymously</label>
+            <div class="anonymous-info">Check this box to submit your complaint without revealing your identity. Your personal information will not be recorded.</div>
+            <small>This is Optional</small>
+          </div>
+        </div>
+
+        <div id="personalInfoSection" class="personal-info">
+        <label for="name">Full Name</label>
+        <input type="text" name="name" id="name" placeholder="Enter your full name"
+          style="font-size:15px; padding:1rem 1.5rem; width:100%; height:3rem;">
+        <small id="nameError" class="error">Name is required</small><br>
+
+        <label for="matric" >Registeration Number</label>
+        <input type="text" name="matric" id="matric" placeholder="Enter matric number"
+          style="font-size:15px; padding:1rem 1.5rem; width:100%; height:3rem;">
+        <small id="matricError" class="error">Matric number is required</small><br>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter Email"
+          style="font-size:15px; padding:1rem 1.5rem; width:100%; height:3rem;">
+        <small id="emailError" class="error">Enter a valid email</small><br>
+
+        <label for="department" >Department</label>
+        <input type="text" id="department" name="department" placeholder="Enter Department"
+          style="font-size:15px; padding:1rem 1.5rem; width:100%; height:3rem;">
+        <small id="deptError" class="error" style="color: red;">Department is required</small><br>
+        </div>
+
+        <label for="title">Complaint Title</label>
+        <input type="text" id="title" placeholder="Title of your complaint"
+          style="font-size:15px; padding:1rem 1.5rem; width:100%; height:3rem;">
+        <small id="titleError" class="error">Complaint title is required</small><br>
+
+        <label for="details">Complaint Details</label>
+        <textarea id="details" placeholder="Describe your complaint..." rows="3"
+          style="font-size:15px; padding:1rem 1.5rem; width:100%; min-height:6rem;"></textarea>
+        <small id="detailsError" class="error">Details must be at least 20 characters</small>
+
+        <label for="file">Attachment (optional)</label>
+        <input type="file" name="file" id="file" style="font-size:15px; padding:0.7rem 0;">
+        <button type="submit" onclick="validateComplaintForm()" class="submit-btn" style="height: 45px;">Submit</button>
+      </form>
+    </div>
+
+    <div>
+      <section id="myComplaintsSection"
+        style="margin-top:2.5rem; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); padding:1.5rem;">
+        <div style="width: 90%;">
+          <h3 style="margin-top:0;">My Complaints</h3>
+          <table id="myComplaintsTable" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="background:#f8f8f8;">
+                <th style="padding:0.5rem; border:1px solid #eee;">Title</th>
+                <th style="padding:0.5rem; border:1px solid #eee;">Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div id="noComplaintsMsg" style="color:#888; margin-top:1rem;"></div>
+        </div>
+      </section>
+    </div>
+    </form>
+  </div>
+  </div>
+  <!-- <script src="script/config.js"></script> -->
+  <script src="new.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+ <form action="" id="registerationForm">
+   <label for="">Name</label><br>
+  <input type="text" placeholder="Name"  id="name">
+  <span id="nameError" style="display: none; color: red;">Name is required and must be less than 30 characters.</span><br>
+    <button type="submit">Submit</button>
+ </form>
+  <script>
+    let name = document.getElementById('name')
+
+    let nameError = document.getElementById('nameError')
+    let registerationForm = document.getElementById('registerationForm')
+
+    registerationForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      let ISVALID = true;
+
+       if (name.value.trim() === "" || name.value.length > 30) {
+        nameError.style.display = "block";
+        isValid = false;
+      } else {
+        nameError.style.display = "none";
+        alert("Form submitted successfully!");
+      }
+
+    });
+
+    //   if (name.value.trim() === "" && name.value > 30) {
+    //     nameError.style.display = "block"
+    //     ISVALID = false
+    //   }
+    //   return ISVALID;
+    // })
+  </script>
+</body>
+
+</html>
