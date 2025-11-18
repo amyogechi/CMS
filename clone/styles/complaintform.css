@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 50%, #6c8e7a 100%);
+  background: linear-gradient(135deg, #2d5016 0%, #21c753 50%, #05913f 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,6 +15,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -41,6 +42,7 @@ body {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -67,6 +69,7 @@ body {
   from {
     transform: rotate(-360deg);
   }
+
   to {
     transform: rotate(0deg);
   }
@@ -112,9 +115,10 @@ header h4 {
   width: 100%;
 }
 
-form{
+form {
   width: 70%;
 }
+
 .form-container input,
 .form-container textarea,
 .form-container select {
@@ -138,8 +142,9 @@ form{
   background-color: white;
   box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
 }
-.inputdiv{
-  height:4rem;
+
+.inputdiv {
+  height: 4rem;
   background-color: #e74c3c;
 }
 
@@ -192,43 +197,85 @@ select {
 }
 
 #logoutBtn {
-      position: absolute;
-      top: 24px;
-      right: 32px;
-      background: linear-gradient(90deg, #e74c3c 60%, #c0392b 100%);
-      color: #fff;
-      border: none;
-      padding: 0.6rem 1.4rem;
-      border-radius: 24px;
-      font-size: 1rem;
-      font-weight: 600;
-      box-shadow: 0 2px 8px rgba(231,76,60,0.12);
-      cursor: pointer;
-      transition: background 0.2s;
-      z-index: 10;
-    }
-    #logoutBtn:hover {
-      background: linear-gradient(90deg, #c0392b 60%, #e74c3c 100%);
-    }
-    #userInfo {
-      position: absolute;
-      top: 24px;
-      left: 32px;
-      color: #333;
-      font-size: 1rem;
-      font-weight: 500;
-      background: #fff8;
-      padding: 0.3rem 1rem;
-      border-radius: 16px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      z-index: 10;
-    }
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  background: linear-gradient(90deg, #e74c3c 60%, #c0392b 100%);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.12);
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 10;
+}
+
+#logoutBtn:hover {
+  background: linear-gradient(90deg, #c0392b 60%, #e74c3c 100%);
+}
+
+#userInfo {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  background: #fff8;
+  padding: 0.3rem 1rem;
+  border-radius: 10px;
+  height: 30px;
+  box-shadow: 0 7px 4px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+}
+.complaints-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-family: Arial, sans-serif;
+}
+
+.complaints-table,
+.complaints-table td {
+  border: 0.1px solid hsla(0, 0%, 20%, 0.377);
+}
+
+.complaints-table th {
+ background-color: hsla(130, 99%, 31%, 0.568);
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  text-align: left;
+}
+
+
+.complaints-table td {
+  background-color: #f9f9f9;
+  padding: 10px;
+  color: #333;
+}
+
+
+.complaints-table tr:hover td {
+  background-color: #e0ffe0;
+}
+table td {
+  max-width: 150px;  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
   body {
     padding: 10px;
   }
-  
+
   .container {
     width: 100%;
     max-width: 100%;
@@ -236,27 +283,27 @@ select {
     border-radius: 15px;
     margin: 10px;
   }
-  
+
   .logo img {
     width: 85px;
     height: 85px;
   }
-  
+
   .header {
     font-size: 28px;
   }
-  
+
   header h4 {
     font-size: 17px;
   }
-  
+
   .form-container input,
   .form-container textarea,
   .form-container select {
     padding: 18px 20px;
     font-size: 16px;
   }
-  
+
   .submit-btn {
     height: 55px;
     font-size: 18px;
@@ -268,82 +315,83 @@ select {
     padding: 30px 25px;
     margin: 5px;
   }
-  
+
   .logo img {
     width: 75px;
     height: 75px;
   }
-  
+
   .header {
     font-size: 24px;
   }
-  
+
   header h4 {
     font-size: 16px;
   }
-  
+
   .form-container label {
     font-size: 16px;
   }
-  
+
   .form-container input,
   .form-container textarea {
     font-size: 16px;
     padding: 16px 18px;
   }
-  
+
   .form-container input::placeholder,
   .form-container textarea::placeholder {
     font-size: 17px;
   }
-  
+
   .submit-btn {
     height: 50px;
     font-size: 17px;
   }
-  
+
   textarea {
     min-height: 100px;
   }
 }
-.anonymous-toggle {
-      background: #f0f4ff;
-      border: 2px solid #08611f;
-      border-radius: 12px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .anonymous-toggle:hover {
-      background: #e5edff;
-    }
-    
-    .anonymous-toggle input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      margin-right: 12px;
-      cursor: pointer;
-    }
-    
-    .anonymous-toggle label {
-      cursor: pointer;
-      font-weight: 500;
-      color: #333;
-      flex: 1;
-    }
-    
-    .anonymous-info {
-      font-size: 13px;
-      color: #666;
-      margin-top: 0.5rem;
-      padding-left: 32px;
-    }
 
-    #personalInfoSection {
+.anonymous-toggle {
+  background: #f0f4ff;
+  border: 2px solid #08611f;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.anonymous-toggle:hover {
+  background: #e5edff;
+}
+
+.anonymous-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.anonymous-toggle label {
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+  flex: 1;
+}
+
+.anonymous-info {
+  font-size: 13px;
+  color: #666;
+  margin-top: 0.5rem;
+  padding-left: 32px;
+}
+
+#personalInfoSection {
   transition: all 0.4s ease;
 }
 
@@ -361,27 +409,27 @@ select {
     padding: 45px 35px;
     margin: 15px auto;
   }
-  
+
   .logo img {
     width: 95px;
     height: 95px;
   }
-  
+
   .header {
     font-size: 30px;
   }
-  
+
   header h4 {
     font-size: 18px;
   }
-  
+
   .form-container input,
   .form-container textarea,
   .form-container select {
     padding: 18px 22px;
     font-size: 17px;
   }
-  
+
   .submit-btn {
     height: 58px;
     font-size: 19px;
@@ -395,27 +443,27 @@ select {
     max-width: 950px;
     padding: 60px;
   }
-  
+
   .logo img {
     width: 110px;
     height: 110px;
   }
-  
+
   .header {
     font-size: 32px;
   }
-  
+
   header h4 {
     font-size: 20px;
   }
-  
+
   .form-container input,
   .form-container textarea,
   .form-container select {
     padding: 16px 20px;
     font-size: 16px;
   }
-  
+
   .submit-btn {
     height: 60px;
     font-size: 20px;

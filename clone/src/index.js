@@ -8,6 +8,8 @@ const { exit } = require('process');
 const { Student, Admin, Complaint } = require('./mongodb');
 const multer = require("multer");
 const fs = require('fs')
+const sendEmail = require("./utils/sendEmail");
+
 
 const app = express()
 app.use(express.urlencoded({ extended: false }))
@@ -41,6 +43,11 @@ app.get("/complaintform", (req, res) => {
 app.get('/admindash', (req, res) => {
   res.render('admindash')
 })
+
+app.get('/changpassword', (req, res) => {
+    res.render('changpassword'); // Renders changepassword.ejs
+});
+
 
 app.post('/registration', async (req, res) => {
   const data = {
@@ -109,31 +116,44 @@ app.post('/registration', async (req, res) => {
 // LOGIN (Admin & Student)
 app.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    // First, check if it's an admin
-    const admin = await Admin.findOne({ username });
+    // Check Admin by email
+    const admin = await Admin.findOne({
+      $or: [{ email }, { username: email }]
+    });
+
     if (admin) {
       const adminPasswordMatch = await bcrypt.compare(password, admin.password);
       if (adminPasswordMatch) {
-        return res.status(200).json({ message: "Redirect to Admin Dashboard", role: 'admin' });
+        return res.status(200).json({
+          message: "Redirect to Admin Dashboard",
+          role: 'admin',
+          email: admin.email
+        });
       } else {
         return res.status(401).json({ message: "Incorrect password" });
       }
     }
 
-    // If not admin, check if it's a student
-    const user = await Student.findOne({ username });
+    //Check Student by email
+    const user = await Student.findOne({
+      $or: [{ email }, { username: email }]
+    });
     if (user) {
       const userPasswordMatch = await bcrypt.compare(password, user.password);
       if (userPasswordMatch) {
-        return res.status(201).json({ message: "Redirect to Complaint Form" });
+        return res.status(201).json({
+          message: "Redirect to Complaint Form",
+          role: 'student',
+          email: user.email
+        });
       } else {
         return res.status(401).json({ message: "Incorrect password" });
       }
     }
 
-    // If neither found
+    // If no user or admin found
     return res.status(404).json({ message: "User not found" });
 
   } catch (error) {
@@ -167,7 +187,7 @@ app.post("/submit-complaint", upload.single("file"), async (req, res) => {
       return res.status(400).json({ message: "Title and details are required!" });
     }
 
-     // Check if the same user already submitted the exact complaint
+    // Check if the same user already submitted the exact complaint
     const existingComplaint = await Complaint.findOne({ regno, title, details });
 
     if (existingComplaint) {
@@ -179,6 +199,7 @@ app.post("/submit-complaint", upload.single("file"), async (req, res) => {
     const complaintData = {
       title,
       details,
+      email,
       anonymous: isAnonymous,
       file: req.file ? req.file.path : null,
       status: "pending",
@@ -215,18 +236,35 @@ app.post("/submit-complaint", upload.single("file"), async (req, res) => {
 });
 
 
-
 // Get all complaints (for admin dashboard)
 app.get('/api/complaints', async (req, res) => {
   try {
     const complaints = await Complaint.find().sort({ createdAt: -1 }); // latest first
-    res.json(complaints);
+
+    // Mask email, name, regno, department if anonymous
+    const formatted = complaints.map(c => ({
+      _id: c._id,
+      title: c.title,
+      details: c.details,
+      name: c.anonymous ? "Anonymous" : c.name,
+      regno: c.anonymous ? "N/A" : c.regno,
+      department: c.anonymous ? "N/A" : c.department,
+      email: c.anonymous ? "N/A" : c.email, // hide email
+      file: c.file || null,
+      anonymous: c.anonymous,
+      status: c.status,
+      createdAt: c.createdAt
+    }));
+
+    res.json(formatted);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error while fetching complaints" });
   }
 });
 
+
+//  update complaint status and send email to user when it status is on resolved
 app.put('/api/complaints/:id/advance', async (req, res) => {
   const { id } = req.params;
 
@@ -249,16 +287,35 @@ app.put('/api/complaints/:id/advance', async (req, res) => {
     }
 
     complaint.status = newStatus;
-    await complaint.save(); // if this fails, schema is wrong or DB issue
+    await complaint.save();
 
     console.log('New status saved:', complaint.status);
-    res.json({ message: `Complaint status advanced to ${complaint.status}`, status: complaint.status });
+
+    // ✔ SEND EMAIL ONLY WHEN RESOLVED
+    if (newStatus === "resolved") {
+      await sendEmail(
+        complaint.email,
+        "Your Complaint Has Been Resolved ✔",
+        `Hello ${complaint.name},\n\n` +
+        `Your complaint titled "${complaint.title}" has been marked as RESOLVED.\n\n` +
+        "Thank you for using the Complaint Management System.\n\n" +
+        "Best regards,\nAdmin Team"
+      );
+    }
+
+    res.json({
+      message: `Complaint status advanced to ${complaint.status}`,
+      status: complaint.status
+    });
 
   } catch (err) {
     console.error("Advance status error:", err);
     res.status(500).json({ message: "Server error while advancing status" });
   }
 });
+
+
+// Get complaint id from db
 
 // Fetch Admin name
 // async function loadAdmin() {
@@ -269,20 +326,110 @@ app.put('/api/complaints/:id/advance', async (req, res) => {
 
 // loadAdmin();
 
+// Get all complaints submitted by a specific user
+app.get("/api/user-complaints/:email", async (req, res) => {
+  try {
+    const email = req.params.email;
+
+    const complaints = await Complaint.find({ email: email }).sort({ createdAt: -1 });
+
+
+    res.json({ success: true, complaints });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: err.message });
+  }
+});
+
+
+app.get("/api/complaint-status/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid Complaint ID" });
+    }
+
+    const complaint = await Complaint.findById(id);
+    if (!complaint) {
+      return res.status(404).json({ message: "Complaint not found" });
+    }
+
+    res.json({
+      status: complaint.status,
+      title: complaint.title,
+    });
+  } catch (err) {
+    console.error("Error fetching complaint status:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+// CHANGE PASSWORD (Admin & Student)
+app.post("/api/change-password", async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    // Validate fields
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const userEmail = req.headers["email"]; // Frontend should send user's email in request header
+
+    if (!userEmail) {
+      return res.status(400).json({ message: "Missing user email" });
+    }
+
+    // Look for user in Admin collection first
+    let user = await Admin.findOne({ email: userEmail });
+    let role = "admin";
+
+    // If not admin → check student
+    if (!user) {
+      user = await Student.findOne({ email: userEmail });
+      role = "student";
+    }
+
+    // If no user found
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Compare current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    // Prevent using same password
+    const isSame = await bcrypt.compare(newPassword, user.password);
+    if (isSame) {
+      return res.status(400).json({ message: "New password must be different from old password" });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password based on role
+    if (role === "admin") {
+      await Admin.updateOne({ email: userEmail }, { password: hashedPassword });
+    } else {
+      await Student.updateOne({ email: userEmail }, { password: hashedPassword });
+    }
+
+    return res.status(200).json({ message: "Password updated successfully!" });
+
+  } catch (error) {
+    console.error("Change password backend error:", error);
+    return res.status(500).json({ message: "Server error. Please try again." });
+  }
+});
+
 
 
 app.listen(5000, () => {
   console.log('port connected')
 })
-
-
-
-
-
-
-
-
-
-
-
-

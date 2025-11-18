@@ -50,19 +50,19 @@
               <div class="form-group">
                 <label for="firstname">First Name</label>
                 <input type="text" name="fname" id="firstname" placeholder="Enter First Name">
-                <small id="firstnameError" class="error">First name is required</small>
+              
               </div>
               <div class="form-group">
                 <label for="lastname">Last Name</label>
                 <input type="text" id="lastname" name="lname" placeholder="Enter Last Name">
-                <small id="lastnameError" class="error">Last name is required</small>
+          
               </div>
             </div>
 
             <div class="form-group">
               <label for="regno">Registration No</label>
               <input type="text" name="regno" id="regno" placeholder="Enter Registration No">
-              <small id="regError" class="error">Enter a valid Registration No</small>
+              
             </div>
           </div>
 
@@ -70,13 +70,12 @@
           <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" placeholder="Enter username" required>
-            <small id="usernameError" class="error">Username is required</small>
+    
           </div>
 
           <div class="form-group">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Enter email" required>
-            <small id="emailError" class="error">Enter a valid email</small>
           </div>
 
           <div class="form-group">
@@ -85,7 +84,6 @@
               <input type="password" id="password" name="password" placeholder="Enter password" required>
               <span onclick="togglePassword()" class="eye">👁️</span>
             </div>
-            <small id="passwordError" class="error">Password must be at least 6 characters</small>
           </div>
 
           <div class="form-group">
@@ -94,7 +92,7 @@
               <input type="password" id="confirmPassword" placeholder="Re-enter password" required>
               <span onclick="toggleConfirmPassword()" class="eye">👁️</span>
             </div>
-            <small id="confirmError" class="error">Passwords do not match</small>
+      
           </div>
 
           <div class="btn-container">
@@ -111,68 +109,6 @@
 
   <!-- <script src="script/api.js"></script> -->
   <script src="registration.js"></script>
-  <script>
-    const form = document.getElementById('registerationForm');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault(); // stop form reload
-
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-
-      try {
-        const response = await fetch('/registration', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: result.message,
-            confirmButtonColor: '#3085d6',
-            timer: 2000,  // closes after 2 seconds
-            showConfirmButton: false
-          }).then(() => {
-            form.reset();
-            window.location.href = '/';
-          });
-
-        } else {
-          if (response.status === 403) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Admin Exists',
-              text: result.message,
-            })}else 
-            if (response.status === 400) {
-            Swal.fire({
-              icon: 'error',
-              title: 'User Exists',
-              text: result.message,
-            })}
-           else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: result.message,
-              confirmButtonColor: '#d33',
-            });
-          }
-        }
-      } catch (err) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Network Error',
-          text: 'Something went wrong. Please try again later.',
-        });
-      }
-    });
-  </script>
 
 </body>
 

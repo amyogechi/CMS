@@ -69,3 +69,108 @@ app.get("*", (req, res) => {
 // Start server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.put('/api/complaints/:id/advance', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Validate ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid complaint ID" });
+    }
+
+    const complaint = await Complaint.findById(id);
+    if (!complaint) return res.status(404).json({ message: "Complaint not found" });
+
+    console.log('Current status:', complaint.status);
+
+    let newStatus;
+    if (complaint.status === 'pending') newStatus = 'in-progress';
+    else if (complaint.status === 'in-progress') newStatus = 'resolved';
+    else if (complaint.status === 'resolved') {
+      return res.status(400).json({ message: "Complaint is already resolved" });
+    }
+
+    complaint.status = newStatus;
+    await complaint.save(); // if this fails, schema is wrong or DB issue
+
+    console.log('New status saved:', complaint.status);
+    res.json({ message: `Complaint status advanced to ${complaint.status}`, status: complaint.status });
+
+
+       // ✅ Send email only when resolved
+    if (complaint.status === 'resolved' && complaint.email) {
+      const mailOptions = {
+        from: 'zubairua471@gmail.com',
+        to: complaint.email,
+        subject: 'Complaint Resolved',
+        html: `
+          <p>Hello <strong>${complaint.name || 'User'}</strong>,</p>
+          <p>Your complaint titled "<strong>${complaint.title}</strong>" has been resolved.</p>
+          <p>Status: <strong>${complaint.status}</strong></p>
+          <br>
+          <p>Thank you,<br>The Admin Team</p>
+        `
+      };
+
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) console.error('Email error:', err);
+        else console.log('Email sent:', info.response);
+      });
+    }
+
+  } catch (err) {
+    console.error("Advance status error:", err);
+    res.status(500).json({ message: "Server error while advancing status" });
+  }
+});

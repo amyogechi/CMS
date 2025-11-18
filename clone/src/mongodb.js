@@ -28,14 +28,18 @@ const adminSchema = new mongoose.Schema({
 
 // Complaint Schema
 const complaintSchema = new mongoose.Schema({
-  name: { type: String, required: function() { return !this.anonymous } },
+  name: { 
+    type: String, 
+    required: function() { return !this.anonymous },
+    default: function() { return this.anonymous ? "Anonymous" : undefined }
+  },
   regno: { type: String, required: function() { return !this.anonymous } },
   email: { type: String, required: function() { return !this.anonymous } },
   department: { type: String, required: function() { return !this.anonymous } },
   title: { type: String, required: true },
   details: { type: String, required: true },
   file: { type: String },
-  anonymous: { type: Boolean, default: false },
+  anonymous: { type: Boolean, default: true },
   submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   status: {
     type: String,
@@ -45,8 +49,14 @@ const complaintSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+complaintSchema.pre('save', function(next) {
+  if (this.anonymous && !this.name) {
+    this.name = "Anonymous";
+  }
+  next();
+});
 
-// Complaint Schema
+// Updated Complaint Schema
 const updateComplaintSchema = new mongoose.Schema({
   update_id: { type: Number, required: true },
   admin_id: { type: Number, required: true },

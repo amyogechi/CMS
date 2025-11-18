@@ -29,7 +29,7 @@ function togglePassword() {
   
   if (passwordField && passwordField.type === 'password') {
     passwordField.type = 'text';
-    if (toggleIcon) toggleIcon.textContent = '🙈';
+    if (toggleIcon) toggleIcon.textContent = '🔐';
     passwordField.setAttribute('aria-label', 'Password visible');
   } else if (passwordField) {
     passwordField.type = 'password';
@@ -490,203 +490,6 @@ function validateSingleField(fieldId) {
   return isValid;
 }
 
-// Enhanced registration with better error handling and UX
-// async function userRegistration() {
-//   // ✅ ENSURE ALL FIELDS ARE INTERACTIVE BEFORE VALIDATION
-//   const allFields = document.querySelectorAll('input, select');
-//   allFields.forEach(field => {
-//     field.style.pointerEvents = 'auto';
-//     field.disabled = false;
-//   });
-
-//   if (!validateForm()) {
-//     // ✅ SCROLL TO FIRST ERROR
-//     const firstError = document.querySelector('.field-error[style*="block"]');
-//     if (firstError) {
-//       firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-//     }
-//     return;
-//   }
-
-//   const role = document.getElementById('role').value.trim();
-//   const username = document.getElementById('username').value.trim();
-//   const email = document.getElementById('email').value.trim();
-//   const password = document.getElementById('password').value;
-
-//   let formData = {
-//     username,
-//     email,
-//     password,
-//     role
-//   };
-
-//   // Add role-specific data
-//   if (role === 'student') {
-//     const firstname = document.getElementById('firstname').value.trim();
-//     const lastname = document.getElementById('lastname').value.trim();
-//     const regno = document.getElementById('regno').value.trim();
-    
-//     formData.firstname = firstname;
-//     formData.lastname = lastname;
-//     formData.regno = regno;
-//   }
-
-//   // Show enhanced loading
-//   const loadingSwal = Swal.fire({
-//     title: 'Creating Your Account...',
-//     html: `
-//       <div class="registration-progress" style="margin-top: 20px;">
-//         <div class="progress-step active" style="display: flex; align-items: center; margin-bottom: 10px; opacity: 1; font-weight: bold;">
-//           <div class="step-icon" style="font-size: 1.5em; margin-right: 10px;">📝</div>
-//           <div class="step-text">Validating Information</div>
-//         </div>
-//         <div class="progress-step" id="step-creating" style="display: flex; align-items: center; margin-bottom: 10px; opacity: 0.6;">
-//           <div class="step-icon" style="font-size: 1.5em; margin-right: 10px;">⚡</div>
-//           <div class="step-text">Creating Account</div>
-//         </div>
-//         <div class="progress-step" id="step-finalizing" style="display: flex; align-items: center; margin-bottom: 10px; opacity: 0.6;">
-//           <div class="step-icon" style="font-size: 1.5em; margin-right: 10px;">✨</div>
-//           <div class="step-text">Finalizing Setup</div>
-//         </div>
-//       </div>
-//     `,
-//     allowOutsideClick: false,
-//     showConfirmButton: false,
-//     didOpen: () => {
-//       Swal.showLoading();
-//     }
-//   });
-
-//   try {
-//     console.log('Sending registration data:', { ...formData, password: '[HIDDEN]' });
-    
-//     // Simulate progress steps
-//     setTimeout(() => {
-//       const step = document.getElementById('step-creating');
-//       if (step) {
-//         step.style.opacity = '1';
-//         step.style.fontWeight = 'bold';
-//       }
-//     }, 1000);
-
-//     const response = await api.register(formData);
-    
-//     setTimeout(() => {
-//       const step = document.getElementById('step-finalizing');
-//       if (step) {
-//         step.style.opacity = '1';
-//         step.style.fontWeight = 'bold';
-//       }
-//     }, 500);
-    
-//     console.log('Registration response:', response);
-
-//     // Enhanced response checking
-//     const isSuccess = response.success || 
-//                      response.message?.includes('successfully') || 
-//                      response.message?.includes('created') ||
-//                      response.status === 'success' ||
-//                      response.error === null;
-
-//     loadingSwal.close();
-
-//     if (isSuccess) {
-//       // Store user info in localStorage
-//       localStorage.setItem('role', role);
-//       localStorage.setItem('username', username);
-      
-//       // Store additional info if available
-//       if (response.user?.id || response.userId) {
-//         localStorage.setItem('userId', response.user?.id || response.userId);
-//       }
-      
-//       // Show success with confetti effect
-//       Swal.fire({
-//         icon: 'success',
-//         title: '🎉 Account Created Successfully!',
-//         html: `
-//           <div class="success-message" style="padding: 10px 0 0 0; font-size: 1.1em; color: #222;">
-//             <p>Welcome to NACOS Complaint System, <strong style="color: #20bf6b;">${username}</strong>!</p>
-//             <p>Your ${role} account has been created successfully.</p>
-//             <div class="next-steps" style="margin-top: 15px; background: #f4f8f6; border-radius: 8px; padding: 10px 18px; display: inline-block;">
-//               <h4 style="margin: 0 0 6px 0; font-size: 1em; color: #2ed573;">Next Steps:</h4>
-//               <ul style="margin: 0; padding-left: 18px; color: #444; text-align: left; display: inline-block;">
-//                 ${role === 'student' ? 
-//                   '<li>Submit your first complaint</li><li>Track complaint status</li>' : 
-//                   '<li>Access admin dashboard</li><li>Manage user complaints</li>'
-//                 }
-//               </ul>
-//             </div>
-//           </div>
-//         `,
-//         timer: 4000,
-//         showConfirmButton: true,
-//         confirmButtonText: role === 'admin' ? 'Go to Dashboard' : 'Start Using System',
-//         timerProgressBar: true
-//       }).then((result) => {
-//         // ✅ PROPERLY RESET FORM
-//         resetForm();
-        
-//         // Redirect based on role
-//         const redirectPage = role === 'admin' ? 'admindashboard.html' : 'complaintform.html';
-//         console.log(`Redirecting to: ${redirectPage}`);
-//         window.location.href = redirectPage;
-//       });
-//     } else {
-//       // Handle registration errors with specific feedback
-//       let errorMessage = 'Registration failed. Please try again.';
-      
-//       if (response.error) {
-//         errorMessage = response.error;
-        
-//         // Handle specific server errors
-//         if (response.error.includes('email')) {
-//           addFieldError('email', 'This email is already registered');
-//         } else if (response.error.includes('username')) {
-//           addFieldError('username', 'This username is already taken');
-//         }
-//       } else if (response.message && !response.message.includes('successfully')) {
-//         errorMessage = response.message;
-//       }
-      
-//       console.error('Registration failed:', response);
-      
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Registration Failed',
-//         text: errorMessage,
-//         footer: 'Please check your information and try again.'
-//       });
-//     }
-//   } catch (error) {
-//     console.error('Registration error:', error);
-//     loadingSwal.close();
-    
-//     let errorMessage = 'Could not connect to server. Please check your internet connection and try again.';
-    
-//     // Handle specific HTTP errors
-//     if (error.message.includes('400')) {
-//       errorMessage = 'Invalid registration data. Please check your inputs.';
-//     } else if (error.message.includes('409')) {
-//       errorMessage = 'Username or email already exists. Please choose different credentials.';
-//     } else if (error.message.includes('500')) {
-//       errorMessage = 'Server error. Please try again later.';
-//     }
-    
-//     Swal.fire({
-//       icon: 'error',
-//       title: 'Connection Error',
-//       html: `
-//         <p>${errorMessage}</p>
-//         <div class="error-actions" style="margin-top: 15px;">
-//           <button class="retry-btn" onclick="userRegistration()" style="margin-right: 10px; padding: 8px 16px; background: #4a7c59; color: white; border: none; border-radius: 5px; cursor: pointer;">Try Again</button>
-//           <button class="contact-btn" onclick="window.open('mailto:support@nacos.edu.ng', '_blank')" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">Contact Support</button>
-//         </div>
-//       `,
-//       showConfirmButton: false
-//     });
-//   }
-// }
 
 // ✅ NEW: Properly reset form function
 function resetForm() {
@@ -780,13 +583,6 @@ window.registrationHelpers = {
 
 
 
-
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', async () => {
   const roleSelect = document.getElementById('role');
   try {
@@ -811,3 +607,89 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+
+ const form = document.getElementById('registerationForm');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault(); // stop form reload
+
+  // ✅ VALIDATE FORM BEFORE SUBMISSION
+  if (!validateForm()) {
+    // Scroll to first error
+    const firstError = document.querySelector('.field-error[style*="block"]');
+    if (firstError) {
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return; // Stop submission if validation fails
+  }
+
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  // ✅ ADDITIONAL PASSWORD CHECK (belt and suspenders approach)
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+  
+  if (password !== confirmPassword) {
+    addFieldError('confirmPassword', ERROR_MESSAGES.PASSWORDS_MISMATCH);
+    Swal.fire({
+      icon: 'error',
+      title: 'Password Mismatch',
+      text: 'Passwords do not match. Please check and try again.',
+      confirmButtonColor: '#d33',
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch('/registration', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: result.message,
+        confirmButtonColor: '#3085d6',
+        timer: 2000,  // closes after 2 seconds
+        showConfirmButton: false
+      }).then(() => {
+        form.reset();
+        window.location.href = '/';
+      });
+
+    } else {
+      if (response.status === 403) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Admin Exists',
+          text: result.message,
+        });
+      } else if (response.status === 400) {
+        Swal.fire({
+          icon: 'error',
+          title: 'User Exists',
+          text: result.message,
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: result.message,
+          confirmButtonColor: '#d33',
+        });
+      }
+    }
+  } catch (err) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Network Error',
+      text: 'Something went wrong. Please try again later.',
+    });
+  }
+});

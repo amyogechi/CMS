@@ -449,22 +449,17 @@ body {
     display: grid;
     gap: 20px;
 }
-
-/* .detail-group {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 10px;
-    align-items: start;
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.detail-label {
-    font-weight: 600;
-    color: #555;
+table td, table th {
+  max-width: 150px;       
+  white-space: nowrap; 
+  overflow: hidden;    
+  text-overflow: ellipsis;
 }
-
-.detail-value {
-    color: #2c3e50;
-} */
 
 /* Modal container */
 #complaintModal {

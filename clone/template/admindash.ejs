@@ -51,12 +51,11 @@
                 <div class="stat-label">In-Progress</div>
             </div>
             <div class="stat-card rejected">
-                <i class="fas fa-times-circle"></i>
-                <div class="stat-number" id="rejectedComplaints">16</div>
+                <i class="fa-solid fa-circle-question"></i>
+                <div class="stat-number" id="anonymosComplaints">16</div>
                 <div class="stat-label">Anonymous</div>
             </div>
         </div>
-
         <!-- Main Dashboard -->
         <div class="dashboard-main">
             <div class="dashboard-header">
@@ -118,19 +117,6 @@
     <script src="admindash.js"></script>
 </body>
 <script>
-    // try{
-    //      const res = await fetch('/api/admin');
-    //      const adminName = admin.username;
-    //      document.getElementById('adminName').innerText = adminName
-    // }catch{
-    //     alert('error')
-    // }
-</script>
-<!-- <script>
-    const adminName = ; // replace with backend data if available
-    document.getElementById('adminName').textContent = adminName;
-  </script> -->
-<script>
 
     document.getElementById('logoutBtn').onclick = function () {
         Swal.fire({
@@ -148,5 +134,4 @@
             }
         });
     };
-
 </script>

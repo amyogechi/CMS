@@ -8,33 +8,42 @@ async function loadComplaints() {
         const total = complaints.length;
         const pending = complaints.filter(c => c.status === 'pending' || !c.status).length;
         const resolved = complaints.filter(c => c.status === 'resolved').length;
-         const progress = complaints.filter(c => c.status === 'in-progress').length;
-        const rejected = complaints.filter(c => c.status === 'rejected' || c.status === 'anonymous').length;
-        
+        const progress = complaints.filter(c => c.status === 'in-progress').length;
+        const anonymous = complaints.filter(c => c.anonymous).length;
+
+
         document.getElementById('totalComplaints').innerText = total;
         document.getElementById('pendingComplaints').innerText = pending;
         document.getElementById('resolvedComplaints').innerText = resolved;
-         document.getElementById('progressComplaints').innerText = progress;
-        document.getElementById('rejectedComplaints').innerText = rejected;
+        document.getElementById('progressComplaints').innerText = progress;
+        document.getElementById('anonymosComplaints').innerText = anonymous;
 
         // Store globally so delegated view-btn can access it
         window.filteredComplaints = complaints;
 
         // search and filter values
         const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
+        const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
 
         // Apply search + status filter
         complaints = complaints.filter(c => {
             const status = (c.status || 'pending').toLowerCase();
+            const title = (c.title || '').toLowerCase();
+            const name = (c.name || '').toLowerCase();
+            const regno = (c.regno || '').toLowerCase();
+
             const matchesSearch =
-                c.title.toLowerCase().includes(searchInput) ||
-                c.name.toLowerCase().includes(searchInput) ||
-                c.regno.toLowerCase().includes(searchInput) ||
+                title.includes(searchInput) ||
+                name.includes(searchInput) ||
+                regno.includes(searchInput) ||
                 status.includes(searchInput);
-            const matchesStatus = statusFilter === '' || status === statusFilter;
+
+            const matchesStatus = !statusFilter || !statusFilter ||
+                (statusFilter === "anonymous" ? c.anonymous === true : status === statusFilter);
+
             return matchesSearch && matchesStatus;
         });
+
 
         window.filteredComplaints = complaints; // update filtered list
 
@@ -49,6 +58,7 @@ async function loadComplaints() {
                 <td>${complaint.name}</td>
                 <td>${complaint.regno}</td>
                 <td>
+                
                   <span class="status-badge ${complaint.status || 'pending'}">
                     ${complaint.status || 'pending'}
                   </span>
@@ -72,8 +82,11 @@ async function loadComplaints() {
 // Update button click
 document.getElementById('complaintsTableBody').addEventListener('click', async (e) => {
     if (e.target && e.target.classList.contains('update-btn')) {
-        const id = e.target.dataset.id;
+        const btn = e.target;
+        btn.disabled = true; // prevent double click
+        btn.innerText = "Updating...";
 
+        const id = btn.dataset.id;
         try {
             const res = await fetch(`/api/complaints/${id}/advance`, { method: 'PUT' });
             const data = await res.json();
@@ -82,9 +95,13 @@ document.getElementById('complaintsTableBody').addEventListener('click', async (
         } catch (err) {
             console.error("Frontend advance error:", err);
             alert("Server error while advancing status");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Updated...";
         }
     }
 });
+
 
 // View button click
 document.getElementById('complaintsTableBody').addEventListener('click', (e) => {

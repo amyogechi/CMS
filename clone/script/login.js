@@ -51,17 +51,6 @@ async function loginSuccess() {
     return;
   }
 
-  // Show loading with better UX
-  // const loadingSwal = Swal.fire({
-  //   title: "Signing you in...",
-  //   text: "Please wait while we verify your credentials",
-  //   allowOutsideClick: false,
-  //   showConfirmButton: false,
-  //   didOpen: () => {
-  //     Swal.showLoading();
-  //   }
-  // });
-
   try {
     // ✅ FIXED: Determine if input is email or username
     const isEmail = usernameOrEmail.includes('@');
